@@ -206,13 +206,14 @@ item-align: center;
     function displayQuestion() {
       var questionElement = document.getElementById('question');
       questionElement.textContent = currentSet.numbers[currentQuestionIndex] + ' x ' + currentMultiplier;
-    }
 
+ // Clear the input field
+  document.getElementById('answer').value = '';
+    }
     // Function to check the user's answer
     function checkAnswer() {
       var userAnswer = parseInt(document.getElementById('answer').value);
       var correctAnswer = currentSet.numbers[currentQuestionIndex] * currentMultiplier;
-
       if (userAnswer === correctAnswer) {
         // Move to next question if the answer is correct
         nextQuestion();
@@ -238,19 +239,14 @@ item-align: center;
         document.getElementById('completionTime').textContent = completionTime;
       }
     }
-
     // Initialize the app
     populateSets();
-
-
  function goToHome() {
     // Show Layer 1 and hide other layers
     document.getElementById('layer1').style.display = 'block';
     document.getElementById('layer2').style.display = 'none';
     document.getElementById('layer3').style.display = 'none';
   }
-
-
   </script>
 </body>
 </html>
