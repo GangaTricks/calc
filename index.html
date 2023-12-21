@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GangaTricks</title>
+  <style>
+     body {
+      font-family: 'Arial', sans-serif;
+      background-color: #6495ED;
+      margin: 0;
+      padding: 0;
+      color: #333;
+width: 450px;
+    }
+
+    h1 {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      margin: 0;
+    }
+
+    /* Home Button Styling */
+    a {
+      color: #fff;
+      background-color: #3498db;
+      padding: 10px 15px;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      font-weight: bold;
+font-size: 20px;
+width: 70px;
+height: 22px;
+    }
+
+    a:hover {
+      background-color: #2980b9;
+    }
+
+    /* Layer Styling */
+    #layer1,
+    #layer2,
+    #layer3 {
+      background-color: #fff;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Sets Styling */
+    #setList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #setList li {
+      background-color: #3498db;
+      color: white;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #setList li:hover {
+      background-color: #2980b9;
+    }
+
+    /* Multiplication Questions Styling */
+    #question,
+    #answer {
+      font-size: 18px;
+      margin-bottom: 10px;
+      display: block;
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+item-align: center;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Footer Styling */
+    footer {
+      background-color: #333;
+      padding: 10px;
+      text-align: center;
+      color: white;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 450px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>GangaTricks</h1>
+<p>
+<div style="text-align: center; margin-bottom: 20px;">
+  <a href="#" onclick="goToHome()">HOME</a>
+</div>
+</p>
+
+  <h2 style="text-align: center;">Mental Multiplication</h2>
+  
+  <!-- Layer 1: Display Sets -->
+  <div id="layer1">
+    <h2>Sets</h2>
+    <ul id="setList"></ul>
+  </div>
+
+  <!-- Layer 2: Display Multiplication Questions -->
+  <div id="layer2" style="display: none;">
+    <h2>Multiplication Questions</h2>
+    <p id="question"></p>
+    <input type="text" id="answer">
+   <button onclick="checkAnswer()" >Submit Answer</button>
+   <button onclick="nextQuestion()" style="position: absolute; left:286px;">Next Question</button>
+  </div>
+
+  <!-- Layer 3: Display User Time -->
+  <div id="layer3" style="display: none;">
+    <h2>Your Time</h2>
+    <p id="completionTime"></p>
+  </div>
+
+<footer>
+  <p>&copy; 2023 GangaTricks</p>
+</footer>
+
+  <script>
+    // JSON data
+    var jsonData = {
+      "sets": [
+        {
+          "name": "11",
+          "numbers": [271, 684, 359, 147, 528, 936, 215, 463, 718, 391],
+          "multiplier": 11
+        },
+        {
+          "name": "Set 2",
+          "numbers": [162, 548, 391, 476, 819, 753, 624, 198, 572, 831],
+          "multiplier": 12
+        },
+        {
+          "name": "Set 3",
+          "numbers": [519, 643, 284, 197, 638, 152, 869, 347, 925, 716],
+          "multiplier": 13
+        }
+        // Add more sets as needed
+      ]
+    };
+
+    // Function to populate Layer 1 with set names
+    function populateSets() {
+      var setList = document.getElementById('setList');
+      jsonData.sets.forEach(function(set) {
+        var listItem = document.createElement('li');
+        listItem.textContent = set.name;
+        listItem.onclick = function() {
+          startMultiplication(set);
+        };
+        setList.appendChild(listItem);
+      });
+    }
+
+    // Function to start multiplication questions for a set
+    function startMultiplication(set) {
+      // Hide Layer 1, show Layer 2
+      document.getElementById('layer1').style.display = 'none';
+      document.getElementById('layer2').style.display = 'block';
+
+      // Initialize question index
+      currentQuestionIndex = 0;
+
+      // Store set and multiplier for later use
+      currentSet = set;
+      currentMultiplier = set.multiplier;
+
+      // Display first question
+      displayQuestion();
+    }
+
+    // Function to display a multiplication question
+    function displayQuestion() {
+      var questionElement = document.getElementById('question');
+      questionElement.textContent = currentSet.numbers[currentQuestionIndex] + ' x ' + currentMultiplier;
+    }
+
+    // Function to check the user's answer
+    function checkAnswer() {
+      var userAnswer = parseInt(document.getElementById('answer').value);
+      var correctAnswer = currentSet.numbers[currentQuestionIndex] * currentMultiplier;
+
+      if (userAnswer === correctAnswer) {
+        // Move to next question if the answer is correct
+        nextQuestion();
+      } else {
+        alert('Incorrect answer. Please try again.');
+      }
+    }
+
+    // Function to move to the next question
+    function nextQuestion() {
+      currentQuestionIndex++;
+
+      if (currentQuestionIndex < currentSet.numbers.length) {
+        // Display the next question
+        displayQuestion();
+      } else {
+        // Hide Layer 2, show Layer 3
+        document.getElementById('layer2').style.display = 'none';
+        document.getElementById('layer3').style.display = 'block';
+
+        // Calculate and display completion time
+        var completionTime = 'Your completion time: XX:XX'; // Replace with actual time calculation
+        document.getElementById('completionTime').textContent = completionTime;
+      }
+    }
+
+    // Initialize the app
+    populateSets();
+
+
+ function goToHome() {
+    // Show Layer 1 and hide other layers
+    document.getElementById('layer1').style.display = 'block';
+    document.getElementById('layer2').style.display = 'none';
+    document.getElementById('layer3').style.display = 'none';
+  }
+
+
+  </script>
+</body>
+</html>
